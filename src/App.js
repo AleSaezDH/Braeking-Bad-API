@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import {useState, useEffect} from 'react';
+import './app.css';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+  const [datos, setDatos] = useState({});
+
+  function pedirFrase () {
+    fetch('https://breaking-bad-quotes.herokuapp.com/v1/quotes')
+    .then(response => response.json())
+    .then(data => data.map(x => setDatos({frase:x.quote, autor:x.author})));
+  }
+
+  useEffect(() => {
+    pedirFrase()
+  }, []);
+
+  return <>{Object.keys(datos).length === 0 ? null : <>
+  <body>
+    <section>
+      <div className='content'>
+        <h1>"{datos.frase}"</h1>
+        <h1 className='h1'>{datos.autor}</h1>
+      </div>
+    <button onClick={pedirFrase}>Otra frase</button>
+    </section>
+  </body>
+  </>}
+  </>
 }
 
 export default App;
